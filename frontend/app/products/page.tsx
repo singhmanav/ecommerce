@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { productsAPI } from '@/lib/api';
 import { Product, ProductListResponse } from '@/types';
 import ProductCard from '@/components/ProductCard';
 import { Filter, Search } from 'lucide-react';
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -258,5 +258,25 @@ export default function ProductsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-4">Shop</h1>
+          <p className="text-gray-600">Discover our collection of trendy clothing</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-gray-200 animate-pulse rounded-lg h-96"></div>
+          ))}
+        </div>
+      </div>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }
